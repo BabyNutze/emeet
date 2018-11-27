@@ -108,10 +108,10 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 								while ( $row = mysqli_fetch_array( $result ) ) {
 									?>
 						<tr>
-							<td><a href="home.php?menu=agenda&sub=addsubterm&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
+							<td><a href="home.php?menu=agenda&sub=addsubterm&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "><b><?php echo $row['term_no']; ?></b></a>
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
-								<?php echo $row[ 'term_subject' ]; ?> <br>
+								<b><?php echo $row[ 'term_subject' ]; ?></b> <br>
 								<?php echo $row[ 'term_detail' ]; ?>
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
