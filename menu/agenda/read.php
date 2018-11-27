@@ -49,7 +49,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 			$et = $row[ "et" ];
 			$md = $row[ "md" ];
 			//echo thai_date( $md );
-			echo strtotime($md);
+			echo strtotime( $md );
 
 
 		} else {
@@ -67,7 +67,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 ?>
 
 <div class="wrapper">
-	<div class="container">
+	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
 				<div class="page-header">
@@ -95,9 +95,9 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 				<table class="table table-dark table-striped">
 					<thead>
 						<tr>
-							<th>ระเบียบวาระที่</th>
+							<th width="10%">ระเบียบวาระที่</th>
 							<th>เรื่อง</th>
-							<th></th>
+							<th width="10%"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -106,29 +106,21 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 						if ( $result = mysqli_query( $conn, $sql ) ) {
 							if ( mysqli_num_rows( $result ) > 0 ) {
 								while ( $row = mysqli_fetch_array( $result ) ) {
-									echo "<tr>";
-									echo "<td><a href='home.php?menu=agenda&sub=addsubterm&ag=" . $agenda_id . "&t=" . $row[ "term_id" ] . "' />" . $row[ 'term_no' ] . "</td>";
-									echo "<td><a href='home.php?menu=agenda&sub=termdetail&ag=" . $agenda_id . "&t=" . $row[ "term_id" ] . "' />" . $row[ 'term_subject' ] . "<br>". $row[ 'term_detail' ] . "</td>";
-									echo "<td><a href='home.php?menu=agenda&sub=termdetail&ag=" . $agenda_id . "&t=" . $row[ "term_id" ] . "' title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
-									<a href='home.php?menu=agenda&sub=edittermdetail&ag=" . $agenda_id . "&t=" . $row[ "term_id" ] . "' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
-									
-									</td>";									
+									?>
+						<tr>
+							<td><a href="home.php?menu=agenda&sub=addsubterm&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
+							</td>
+							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
+								<?php echo $row[ 'term_subject' ]; ?> <br>
+								<?php echo $row[ 'term_detail' ]; ?>
+							</td>
+							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>"  title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 
-									echo "</tr>";
-								}
-								echo "</table>";
-								// Free result set
-								mysqli_free_result( $result );
-							} else {
-								echo "ไม่มีวาระการประชุม";
-							}
-						} else {
-							echo "ERROR: Could not able to execute $sql. " . mysqli_error( $conn );
-						}
-
-						// Close connection
-						mysqli_close( $conn );
-						?>
+							</td></tr>
+						<?php } ?>
+				</table>
+				<?php } else { echo "ไม่มีวาระการประชุม"; } } else { echo "ERROR: Could not able to execute $sql. " . mysqli_error( $conn ); } // Close connection mysqli_close( $conn ); ?>
 			</div>
 		</div>
 	</div>
