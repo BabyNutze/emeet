@@ -1,13 +1,13 @@
 <?php
 
 
-if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
+if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 
 	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject,  DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et , term_no, term_subject , subterm.subterm_subject, term.term_detail
 	FROM agenda 
 	LEFT JOIN term ON agenda.agenda_id = term.agenda_id 
 	LEFT JOIN subterm on subterm.term_id = term.term_id
-	WHERE agenda.agenda_id = " . $_GET[ 'ag' ] . " and term.term_id = " . $_GET[ 't' ];
+	WHERE agenda.agenda_id = " . $_GET[ 'a' ] . " and term.term_id = " . $_GET[ 't' ];
 
 	if ( $result = mysqli_query( $conn, $sql ) ) {
 		if ( mysqli_num_rows( $result ) == 1 ) {
