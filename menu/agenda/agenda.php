@@ -41,9 +41,9 @@
 						echo "<td>" . $row[ 'agenda_subject' ] . "</td>";
 						echo "<td>";
 
-						echo " <a href='home.php?menu=agenda&sub=read&ag=" . $row[ 'agenda_id' ] . "' title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>";
+						echo " <a href='home.php?menu=agenda&sub=read&a=" . $row[ 'agenda_id' ] . "' title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>";
 						?>
-			<a href="home.php?menu=agenda&sub=editagenda&ag=<?php echo $row[ 'agenda_id' ];?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>			<a href="home.php?menu=agenda&sub=deleteagenda&ag=<?php echo $row[ 'agenda_id' ];?>" onclick="return confirm('Are you sure?')" title='ลบ' data-toggle='tooltip'><span><i class='fas fa-trash-alt fa-2x'></i></span></a>
+			<a href="home.php?menu=agenda&sub=editagenda&a=<?php echo $row[ 'agenda_id' ];?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>			<a href="home.php?menu=agenda&sub=deleteagenda&a=<?php echo $row[ 'agenda_id' ];?>" onclick="return confirm('Are you sure?')" title='ลบ' data-toggle='tooltip'><span><i class='fas fa-trash-alt fa-2x'></i></span></a>
 			<?php
 
 			echo "</td>";
