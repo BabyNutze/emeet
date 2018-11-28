@@ -50,7 +50,7 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 							<li class="breadcrumb-item"><a href="home.php?menu=agenda">งานประชุม</a>
 							</li>
 							<li class="breadcrumb-item">
-								<a href="home.php?menu=agenda&sub=read&ag=<?php echo $agenda_id;?>">
+								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
 									<?php echo $agenda_subject . " วันที่ " . $md. " เวลา " . $st . "-" . $et ; ?>
 								</a>
 							</li>
@@ -91,6 +91,7 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 					<div class="float-right"><a href='home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id;?>&t=<?php echo $term_id;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 				</div>
 					<textarea rows="3" class="form-control"></textarea>
+					<button type="submit" >บันทึก</button>
 				</form>
 
 
