@@ -1,14 +1,14 @@
 <?php
 
 
-if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] && isset( $_GET[ "t" ] ) && !empty( trim( $_GET[ "t" ] ) ) ) ) ) {
+if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] && isset( $_GET[ "t" ] ) && !empty( trim( $_GET[ "t" ] ) ) ) ) ) {
 
 	// Prepare a select statement
 	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject,  DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et , term_no, term_subject , subterm.subterm_subject
 	FROM agenda 
 	LEFT JOIN term ON agenda.agenda_id = term.agenda_id 
 	LEFT JOIN subterm on subterm.term_id = term.term_id
-	WHERE agenda.agenda_id = " . $_GET[ 'ag' ] . " and term.term_id = " . $_GET[ 't' ];
+	WHERE agenda.agenda_id = " . $_GET[ 'a' ] . " and term.term_id = " . $_GET[ 't' ];
 
 	if ( $result = mysqli_query( $conn, $sql ) ) {
 		if ( mysqli_num_rows( $result ) == 1 ) {
@@ -59,9 +59,11 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'subterm_subject' ] ) && 
 	$query = mysqli_query( $conn, $sql );
 	if ( $conn->query( $sql ) === TRUE ) {
 		echo "บันทึกข้อมูลแล้ว";
-		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&ag=$agenda_id&t=$term_id';}, 1000);</script>";
+		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&a=$agenda_id&t=$term_id';}, 1000);</script>";
 	} else {
-		echo "Error: " . $sql . "<br>" . $conn->error;
+		//echo "Error: " . $sql . "<br>" . $conn->error;
+		echo "ตรวจสอบอีกครั้ง";
+				echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&a=$agenda_id&t=$term_id';}, 1000);</script>";
 	}
 
 
