@@ -100,19 +100,22 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'subterm_subject' ] ) && 
 				<br>
 				<h3>
 					<?php echo $agenda_subject ;  ?>
-				</h3>					<h5>
-						<?php echo $term_no ." " .$term_subject ;  ?>
-					</h5>
+				</h3>
+				<h5>
+					<?php echo $term_no ." " .$term_subject ;  ?>
+				</h5>
 				<?php 
 				$sql = "SELECT * FROM subterm where term_id = $term_id and agenda_id = $agenda_id";
 	$result = mysqli_query( $conn, $sql );
 	if ( $result->num_rows > 0 ) {
 		// output data of each row
+		$row_cnt = mysqli_num_rows($result);
+		
 		if ( $row = $result->fetch_assoc() ) {
-			echo $row['subterm_subject']. "<br>";
+			echo "มีวาระย่อย $row_cnt วาระ" . "<br><a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$term_id&s=$row[subterm_id]'>". $row['subterm_subject'] . "</a><br>";
 		}
 	} else {
-echo "ยังไม่มีวาระย่อย";
+			echo "ยังไม่มีวาระย่อย";
 	}
 
 				
@@ -124,7 +127,7 @@ echo "ยังไม่มีวาระย่อย";
 					<br>
 
 					<div class="form-group">
-						<label for="email">ชื่อวาระย่อย:</label>
+						<label for="subterm_subject">เพิ่มชื่อวาระย่อย:</label>
 						<input type="text" name="subterm_subject" class="form-control">
 					</div>
 					<div class="form-group">
