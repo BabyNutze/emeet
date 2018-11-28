@@ -102,9 +102,9 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 					</thead>
 					<tbody>
 						<?php
-						$sql = "SELECT * FROM term 
-						left join subterm on term.term_id = subterm.subterm_id 
-						and term.agenda_id = subterm.agenda_id where term.agenda_id = $agenda_id";
+						$sql = "SELECT term.term_id, term.term_no, term.term_subject, subterm.subterm_id, subterm.subterm_subject FROM term 
+						left join subterm on term.term_id = subterm.term_id 
+						and term.agenda_id = subterm.agenda_id where term.agenda_id = $agenda_id order by term.term_id asc";
 						if ( $result = mysqli_query( $conn, $sql ) ) {
 							if ( mysqli_num_rows( $result ) > 0 ) {
 								while ( $row = mysqli_fetch_array( $result ) ) {
@@ -114,9 +114,19 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
 								<b><?php echo $row[ 'term_subject' ]; ?></b>
-								
+								<br> <?php if($row["subterm_id"] != null){
+										
+										echo $row["subterm_subject"];
+										?>
+										<a href="home.php?menu=agenda&sub=subtermdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>&s= "></a>
+											<?php
+									}else{
+										
+									}
+									?>
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=addsubterm3&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
 								<a href="home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>"  title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 
 							</td></tr>
