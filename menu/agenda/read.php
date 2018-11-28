@@ -102,17 +102,19 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 					</thead>
 					<tbody>
 						<?php
-						$sql = "SELECT * FROM term where agenda_id = $agenda_id";
+						$sql = "SELECT * FROM term 
+						left join subterm on term.term_id = subterm.subterm_id 
+						and term.agenda_id = subterm.agenda_id where term.agenda_id = $agenda_id";
 						if ( $result = mysqli_query( $conn, $sql ) ) {
 							if ( mysqli_num_rows( $result ) > 0 ) {
 								while ( $row = mysqli_fetch_array( $result ) ) {
 									?>
 						<tr>
-							<td><a href="home.php?menu=agenda&sub=addsubterm&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "><b><?php echo $row['term_no']; ?></b></a>
+							<td><a href="home.php?menu=agenda&sub=addsubterm3&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "><b><?php echo $row['term_no']; ?></b></a>
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
-								<b><?php echo $row[ 'term_subject' ]; ?></b> <br>
-								<?php echo $row[ 'term_detail' ]; ?>
+								<b><?php echo $row[ 'term_subject' ]; ?></b>
+								
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
 								<a href="home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>"  title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
