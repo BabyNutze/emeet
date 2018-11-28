@@ -86,7 +86,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 
 				<h5><span></span> <?php echo $agenda_topic; ?></h5>
 				<div class="float-right">
-					<a href="home.php?menu=agenda&sub=addterm&ag=<?php echo $agenda_id; ?>" class="btn btn-primary" role="button" aria-disabled="true">เพิ่มวาระ</a>
+					<a href="home.php?menu=agenda&sub=addterm&a=<?php echo $agenda_id; ?>" class="btn btn-primary" role="button" aria-disabled="true">เพิ่มวาระ</a>
 				</div>
 
 				<h5><span>วันที่</span> <?php echo $thaidate. " เวลา " . $st . "-" . $et ; ?> น.</h5>
@@ -105,31 +105,43 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 						$sql = "SELECT term.term_id, term.term_no, term.term_subject, subterm.subterm_id, subterm.subterm_subject FROM term 
 						left join subterm on term.term_id = subterm.term_id 
 						and term.agenda_id = subterm.agenda_id where term.agenda_id = $agenda_id order by term.term_id asc";
+						$sql = "SELECT term.term_id, term.term_no, term.term_subject FROM term 
+						where term.agenda_id = $agenda_id order by term.term_id asc";
 						if ( $result = mysqli_query( $conn, $sql ) ) {
 							if ( mysqli_num_rows( $result ) > 0 ) {
 								while ( $row = mysqli_fetch_array( $result ) ) {
+									$primaryterm = $row[ "term_id" ];
 									?>
 						<tr>
 							<td><a href="home.php?menu=agenda&sub=addsubterm3&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "><b><?php echo $row['term_no']; ?></b></a>
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
-								<b><?php echo $row[ 'term_subject' ]; ?></b>
-								<br> <?php if($row["subterm_id"] != null){
-										
-										echo $row["subterm_subject"];
-										?>
-										<a href="home.php?menu=agenda&sub=subtermdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>&s= "></a>
-											<?php
-									}else{
-										
+								<b>
+									<?php echo $row[ 'term_subject' ]; ?>
+								</b>
+								<br>
+								<?php 
+									$sql2 = "SELECT * FROM subterm where term_id = $primaryterm and agenda_id = $agenda_id";
+									
+									$result2 = mysqli_query($conn, $sql2);
+
+									if (mysqli_num_rows($result2) > 0) {
+    								while($row2 = mysqli_fetch_assoc($result2)) {
+									echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row[term_id]&s=$row[subterm_id]'>" . $row2["subterm_subject"] . "</a><br>";
+    								}
+									} else {
+									
 									}
+
+									
 									?>
 							</td>
-							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
-								<a href="home.php?menu=agenda&sub=addsubterm3&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
-								<a href="home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>"  title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
+							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=addsubterm3&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 
-							</td></tr>
+							</td>
+						</tr>
 						<?php } ?>
 				</table>
 				<?php } else { echo "ไม่มีวาระการประชุม"; } } else { echo "ERROR: Could not able to execute $sql. " . mysqli_error( $conn ); } // Close connection mysqli_close( $conn ); ?>
