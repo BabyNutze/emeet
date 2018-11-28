@@ -127,7 +127,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 
 									if (mysqli_num_rows($result2) > 0) {
     								while($row2 = mysqli_fetch_assoc($result2)) {
-									echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row[term_id]&s=$row[subterm_id]'>" . $row2["subterm_subject"] . "</a><br>";
+									echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row[term_id]'>" . $row2["subterm_subject"] . "</a><br>";
     								}
 									} else {
 									
