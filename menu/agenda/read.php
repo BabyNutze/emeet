@@ -1,6 +1,6 @@
 <?php
 // Check existence of id parameter before processing further
-if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
+if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 
 	$thai_day_arr = array( "อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์" );
 	$thai_month_arr = array(
@@ -33,7 +33,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 
 	// Prepare a select statement
 	$sql = "SELECT *  , date_format(DATE_ADD(meeting_day, INTERVAL 543 year),'%d/%m/%Y') as thaidate,
-	DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,TIME_FORMAT(end_time, '%H:%i') as et FROM agenda WHERE agenda_id = " . $_GET[ 'ag' ];
+	DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,TIME_FORMAT(end_time, '%H:%i') as et FROM agenda WHERE agenda_id = " . $_GET[ 'a' ];
 
 	if ( $result = mysqli_query( $conn, $sql ) ) {
 		if ( mysqli_num_rows( $result ) == 1 ) {
@@ -54,8 +54,8 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 
 		} else {
 			// URL doesn't contain valid id parameter. Redirect to error page
-			header( "location: error.php" );
-			exit();
+			//header( "location: error.php" );
+			//exit();
 		}
 
 	} else {
@@ -102,9 +102,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 					</thead>
 					<tbody>
 						<?php
-						$sql = "SELECT term.term_id, term.term_no, term.term_subject, subterm.subterm_id, subterm.subterm_subject FROM term 
-						left join subterm on term.term_id = subterm.term_id 
-						and term.agenda_id = subterm.agenda_id where term.agenda_id = $agenda_id order by term.term_id asc";
+
 						$sql = "SELECT term.term_id, term.term_no, term.term_subject FROM term 
 						where term.agenda_id = $agenda_id order by term.term_id asc";
 						if ( $result = mysqli_query( $conn, $sql ) ) {
