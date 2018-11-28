@@ -78,7 +78,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 							<li class="breadcrumb-item"><a href="home.php?menu=agenda">งานประชุม</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">
-								<?php echo $agenda_topic . " วันที่ " . $thaidate. " เวลา " . $st . "-" . $et ; ?>
+								<?php echo $agenda_topic; ?>
 							</li>
 						</ol>
 					</nav>
@@ -127,7 +127,8 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 
 									if (mysqli_num_rows($result2) > 0) {
     								while($row2 = mysqli_fetch_assoc($result2)) {
-									echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row[term_id]'>" . $row2["subterm_subject"] . "</a><br>";
+							
+									echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row2[term_id]&s=$row2[subterm_id]'>" . $row2["subterm_subject"] . "</a><br>";
     								}
 									} else {
 									
@@ -136,9 +137,9 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 									
 									?>
 							</td>
-							<td><a href="home.php?menu=agenda&sub=termdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
-								<a href="home.php?menu=agenda&sub=addsubterm3&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
-								<a href="home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
+							<td><a href="home.php?menu=agenda&sub=termdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=addsubterm3&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 
 							</td>
 						</tr>
