@@ -6,7 +6,7 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 	$term_id = $_POST[ "term_id" ];
 
 
-	$sql = "UPDATE term SET term_detail ='$detail' WHERE term_id='$term_id' and agenda_id = '$agenda_id' ";
+	$sql = "UPDATE term SET term_detail ='$detail' WHERE term_id = '$term_id' and agenda_id = '$agenda_id' ";
 	if ( mysqli_query( $conn, $sql ) ) {
 		echo "ปรับปรุงข้อมูลแล้ว";
 		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&a=$agenda_id&t=$term_id';}, 1000);</script>";
