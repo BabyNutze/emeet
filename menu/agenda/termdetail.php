@@ -1,9 +1,8 @@
 <?php
 
-
 if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 
-	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject,  DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et , term_no, term_subject , subterm.subterm_subject, term.term_detail
+	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject,  DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et , term_no, term_subject , subterm.subterm_subject, term.term_detail, term.term_resolution
 	FROM agenda 
 	LEFT JOIN term ON agenda.agenda_id = term.agenda_id 
 	LEFT JOIN subterm on subterm.term_id = term.term_id
@@ -24,6 +23,7 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 			$term_subject = $row[ "term_subject" ];
 			$term_no = $row[ "term_no" ];
 			$term_detail = $row[ "term_detail" ];
+			$term_resolution = $row[ "term_resolution" ];
 
 		} else {
 			// URL doesn't contain valid id parameter. Redirect to error page
@@ -34,6 +34,33 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 	} else {
 		echo "Oops! Something went wrong. Please try again later.";
 	}
+}
+
+if ( isset( $_POST[ 'btnres' ] ) ) {
+
+	if ( !empty( $_POST[ 'term_resolution' ] ) && !empty( $_POST[ 'agenda_id' ] ) && !empty( $_POST[ 'term_id' ] ) ) {
+		$agenda_id = $_POST[ 'agenda_id' ];
+		$term_id = $_POST[ 'term_id' ];
+		$term_resolution = $_POST[ 'term_resolution' ];
+
+		$sql = "UPDATE term SET term_resolution ='$term_resolution' WHERE agenda_id = $agenda_id and term_id= $term_id";
+		if ( mysqli_query( $conn, $sql ) ) {
+
+		} else {
+
+			echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&a=$agenda_id&t=$term_id';}, 1000);</script>";
+		}
+
+
+
+
+
+
+
+	} else {
+		echo "<script type='text/javascript'>alert('กรุณากรอกมติการประชุมด้วย');</script>";
+	}
+
 }
 
 ?>
@@ -51,7 +78,7 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 							</li>
 							<li class="breadcrumb-item">
 								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
-									<?php echo $agenda_subject . " วันที่ " . $md. " เวลา " . $st . "-" . $et ; ?>
+									<?php echo $agenda_subject ; ?>
 								</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">
@@ -73,7 +100,7 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 						<b><?php echo $term_no ." " .$term_subject ;  ?></b>
 					</h5>
 			
-				<div class="float-right"><a href='home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id;?>&t=<?php echo $term_id;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
+				<div class="float-right"><a href='home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id;?>&t=<?php echo $term_id;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 				</div>
 				<br>
 				<input type="hidden" name="agenda_id" value="<?php echo $agenda_id;?>">
@@ -86,12 +113,26 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 				<div class="float-right">
 
 				</div>
-				<form action="home.php?menu=agenda&sub=savetermdetail" id="addsubtermform" name="addtermform" method="post">
-					<h5><b><u>มติที่ประชุม</u></b></h5>				
+				<form action="" id="addtermform" name="addtermform" method="post" >
+					<h5><b><u>มติที่ประชุม</u></b></h5>
 					<div class="float-right"><a href='home.php?menu=agenda&sub=edittermdetail&ag=<?php echo $agenda_id;?>&t=<?php echo $term_id;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
-				</div>
-					<textarea rows="3" class="form-control"></textarea>
-					<button type="submit" >บันทึก</button>
+					</div>
+					<?php
+
+					if ( !empty( $term_resolution ) ) {
+
+						echo "<input type='text' name='term_resolution' class='form-control' value='$term_resolution' ></input> ";
+					} else {
+						echo "<input type='text' name='term_resolution' class='form-control' ></input> ";
+
+					}
+					?>
+
+					<input type="hidden" name="agenda_id" id="agenda_id" value="<?php echo $agenda_id; ?>">
+					<input type="hidden" name="term_id" value="<?php echo $term_id; ?>">
+
+					<button type="submit" name="btnres" class="btn btn-primary">บันทึก</button>
+
 				</form>
 
 
