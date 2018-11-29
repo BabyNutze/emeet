@@ -1,6 +1,6 @@
 <?php
 
-if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
+if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 
 	// Prepare a select statement
 	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject,  DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	meeting_day,
@@ -8,7 +8,7 @@ TIME_FORMAT(end_time, '%H:%i') as et, round, agenda.committee_id, agenda.subcomm
 	FROM agenda 
 	left join committee on committee.committee_id = agenda.committee_id    
     left join subcommittee on subcommittee.subcommittee_id = agenda.subcommittee_id
-	WHERE agenda_id = " . $_GET[ 'ag' ];
+	WHERE agenda_id = " . $_GET[ 'a' ];
 
 	if ( $result = mysqli_query( $conn, $sql ) ) {
 		if ( mysqli_num_rows( $result ) == 1 ) {
@@ -45,30 +45,30 @@ TIME_FORMAT(end_time, '%H:%i') as et, round, agenda.committee_id, agenda.subcomm
 
 if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) && isset( $_POST[ "subject" ] ) && !empty( trim( $_POST[ "subject" ] ) ) ) {
 
-	$subject = $_POST[ "subject" ];
-	$agenda_id = $_POST[ "agenda_id" ];
-	$round = $_POST[ "round" ];	
-	$committee_id = $_POST[ "committee_id" ];	
-	$subcommittee_id = $_POST[ "subcommittee_id" ];	
-	$meeting_day = $_POST[ "meeting_day" ];
-	
-	$st1 = trim( $_POST[ "t11" ] . ":" . $_POST[ "t12" ] . ":00" );
-	$st2 = str_replace( ' ', '', $st1 );
-	$et1 = $_POST[ "t21" ] . ":" . $_POST[ "t22" ] . ":00";
-	$et2 = str_replace( ' ', '', $et1 );
+	$fsubject = $_POST[ "subject" ];
+	$fagenda_id = $_POST[ "agenda_id" ];
+	$fround = $_POST[ "round" ];	
+	$fcommittee_id = $_POST[ "committee_id" ];	
+	$fsubcommittee_id = $_POST[ "subcommittee_id" ];	
+	$fmeeting_day = $_POST[ "meeting_day" ];
 
-	$start_time = $meeting_day . " " . $st2;
-	$end_time = $meeting_day . " " . $et2;
+	
+	$fst1 = trim( $_POST[ "t11" ] . ":" . $_POST[ "t12" ] . ":00" );
+	$fst2 = str_replace( ' ', '', $fst1 );
+	$fet1 = $_POST[ "t21" ] . ":" . $_POST[ "t22" ] . ":00";
+	$fet2 = str_replace( ' ', '', $fet1 );
+
+	$fstart_time = $fmeeting_day . " " . $fst2;
+	$fend_time = $fmeeting_day . " " . $fet2;
 
 	
 	// Prepare a select statement
-	$sql = "UPDATE agenda SET agenda_subject= '$agenda_subject', round = '$round', committee_id = $committee_id, subcommittee_id = $subcommittee_id, meeting_day = '$meeting_day', start_time = '$start_time', end_time = '$end_time'
-	WHERE agenda_id =  $agenda_id";
-	
+	$sql = "UPDATE agenda SET agenda_subject= '$fsubject', round = '$fround', committee_id = $fcommittee_id, subcommittee_id = $fsubcommittee_id, meeting_day = '$fmeeting_day', start_time = '$fstart_time', end_time = '$fend_time'
+	WHERE agenda_id =  $fagenda_id";
 	if ( mysqli_query( $conn, $sql ) ) {
-		echo "แก้ไขข้อมูลแล้ว";
-		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&ag=$agenda_id';}, 1000);</script>";
-
+		
+		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=editagenda&a=$agenda_id';} );</script>";
+		
 	} else {
 		echo "Error updating record: " . mysqli_error( $conn );
 	}
@@ -87,10 +87,13 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 							</li>
 							<li class="breadcrumb-item " aria-current="page"><a href="home.php?menu=agenda">งานประชุม</a>
 							</li>
-							<li class="breadcrumb-item active" aria-current="page">
-								<a href="home.php?menu=agenda&sub=read&ag=<?php echo $agenda_id;?>">
-									<?php echo $agenda_subject . " วันที่ " . $md. " เวลา " . $st . "-" . $et ; ?>
+							<li class="breadcrumb-item" aria-current="page">
+								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
+									<?php echo $agenda_subject . " ครั้งที่ " . $round; ?>
 								</a>
+							</li>							
+							<li class="breadcrumb-item active" aria-current="page">
+								แก้ไขการประชุม
 							</li>
 
 						</ol>
@@ -102,7 +105,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 				<form action="" method="post">
 					<div class="form-row">
 						<div class="form-group col-md-9">
-							<label for="inputEmail4">หัวข้อการประชุม</label>
+							<label for="subject">หัวข้อการประชุม</label>
 							<input type="text" class="form-control" name="subject" value="<?php echo $agenda_subject;?>">
 							<input type="hidden" name="agenda_id" value="<?php echo $agenda_id;?>">
 						</div>
