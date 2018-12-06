@@ -2,12 +2,10 @@
 
 if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 
-	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject,  DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et , term_no, term_subject , subterm.subterm_subject, term.term_detail, term.term_resolution
+	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject, agenda.round, DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et ,term.tid,  term.term_id, term.term_no, term.term_subject , term.term_detail, term.term_resolution
 	FROM agenda 
 	LEFT JOIN term ON agenda.agenda_id = term.agenda_id 
-	LEFT JOIN subterm on subterm.term_id = term.term_id
-	WHERE agenda.agenda_id = " . $_GET[ 'a' ] . " and term.term_id = " . $_GET[ 't' ];
-
+	WHERE agenda.agenda_id = " . $_GET[ 'a' ] . " and term.tid = " . $_GET[ 't' ];
 	if ( $result = mysqli_query( $conn, $sql ) ) {
 		if ( mysqli_num_rows( $result ) == 1 ) {
 			/* Fetch result row as an associative array. Since the result set
@@ -17,6 +15,7 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 			// Retrieve individual field value
 			$agenda_id = $row[ "agenda_id" ];
 			$agenda_subject = $row[ "agenda_subject" ];
+			$round = $row[ "round" ];
 			$md = $row[ "md" ];
 			$st = $row[ "st" ];
 			$et = $row[ "et" ];
@@ -24,11 +23,9 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 			$term_no = $row[ "term_no" ];
 			$term_detail = $row[ "term_detail" ];
 			$term_resolution = $row[ "term_resolution" ];
-
 		} else {
 			// URL doesn't contain valid id parameter. Redirect to error page
-			header( "location: error.php" );
-			exit();
+
 		}
 
 	} else {
@@ -78,7 +75,7 @@ if ( isset( $_POST[ 'btnres' ] ) ) {
 							</li>
 							<li class="breadcrumb-item">
 								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
-									<?php echo $agenda_subject ; ?>
+									<?php echo $agenda_subject . " ครั้งที่ " . $round; ?>
 								</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">
@@ -93,7 +90,7 @@ if ( isset( $_POST[ 'btnres' ] ) ) {
 
 				<br>
 				<h3>
-					<b><?php echo $agenda_subject ;  ?></b>
+					<b><?php echo $agenda_subject . " ครั้งที่ " . $round; ?></b>
 				</h3>
 			
 				<h5>
