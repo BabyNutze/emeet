@@ -2,10 +2,10 @@
 
 
 
-if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
+if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 
 	// Prepare a select statement
-	$sql = "SELECT *  , DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,TIME_FORMAT(end_time, '%H:%i') as et FROM agenda WHERE agenda_id = " . $_GET[ 'ag' ];
+	$sql = "SELECT *  , DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,TIME_FORMAT(end_time, '%H:%i') as et, round FROM agenda WHERE agenda_id = " . $_GET[ 'a' ];
 
 	if ( $result = mysqli_query( $conn, $sql ) ) {
 		if ( mysqli_num_rows( $result ) == 1 ) {
@@ -15,7 +15,8 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 
 			// Retrieve individual field value
 			$agenda_id = $row[ "agenda_id" ];
-			$agenda_topic = $row[ "agenda_subject" ];
+			$agenda_subject = $row[ "agenda_subject" ];
+			$round = $row[ "round" ];
 			$md = $row[ "md" ];
 			$st = $row[ "st" ];
 			$et = $row[ "et" ];
@@ -24,7 +25,7 @@ if ( isset( $_GET[ "ag" ] ) && !empty( trim( $_GET[ "ag" ] ) ) ) {
 
 		} else {
 			// URL doesn't contain valid id parameter. Redirect to error page
-			header( "location: error.php" );
+
 			exit();
 		}
 
@@ -83,7 +84,11 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'hdnCount' ] ) ) {
 							</li>
 							<li class="breadcrumb-item" aria-current="page"><a href="home.php?menu=agenda">งานประชุม</a>
 							</li>
-							<li class="breadcrumb-item active" aria-current="page">ข้อมูลการประชุม</li>
+							<li class="breadcrumb-item">
+								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
+									<?php echo $agenda_subject . " ครั้งที่ " . $round; ?>
+								</a>
+							</li>
 						</ol>
 					</nav>
 					<div class="float-right"><a href="?menu=agenda&sub=addagenda">เพิ่มวาระการประชุม</a>
@@ -101,7 +106,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'hdnCount' ] ) ) {
 					<table class="table table-hover" id="mytable">
 						<thead class="thead-light">
 							<tr>
-								<th style="width: 8.33%">วาระที่</th>
+								<th style="width: 13.33%">วาระที่</th>
 								<th style="width: 50%">เรื่อง</th>
 								<th></th>
 							</tr>
