@@ -85,8 +85,8 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'subterm_subject' ] ) && 
 							<li class="breadcrumb-item" aria-current="page"><a href="home.php?menu=agenda">งานประชุม</a>
 							</li>
 							<li class="breadcrumb-item">
-								<a href="home.php?menu=agenda&sub=read&ag=<?php echo $agenda_id;?>">
-									<?php echo $agenda_subject . " วันที่ " . $md. " เวลา " . $st . "-" . $et ; ?>
+								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
+									<?php echo $agenda_subject  ; ?>
 								</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">
