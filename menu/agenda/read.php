@@ -44,12 +44,13 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 			// Retrieve individual field value
 			$agenda_id = $row[ "agenda_id" ];
 			$agenda_topic = $row[ "agenda_subject" ];
+			$round = $row[ "round" ];
 			$thaidate = $row[ "thaidate" ];
 			$st = $row[ "st" ];
 			$et = $row[ "et" ];
 			$md = $row[ "md" ];
-			//echo thai_date( $md );
-			echo strtotime( $md );
+
+
 
 
 		} else {
@@ -78,13 +79,13 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 							<li class="breadcrumb-item"><a href="home.php?menu=agenda">งานประชุม</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">
-								<?php echo $agenda_topic; ?>
+								<?php echo $agenda_topic . " ครั้งที่ " . $round; ?>
 							</li>
 						</ol>
 					</nav>
 				</div>
 
-				<h5><span></span> <?php echo $agenda_topic; ?></h5>
+				<h5><span></span> <?php echo $agenda_topic . " ครั้งที่ " . $round; ?></h5>
 				<div class="float-right">
 					<a href="home.php?menu=agenda&sub=addterm&a=<?php echo $agenda_id; ?>" class="btn btn-primary" role="button" aria-disabled="true">เพิ่มวาระ</a>
 				</div>
@@ -103,41 +104,43 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 					<tbody>
 						<?php
 
-						$sql = "SELECT term.term_id, term.term_no, term.term_subject FROM term 
+						$sql = "SELECT term.tid, term.term_no, term.term_subject FROM term 
 						where term.agenda_id = $agenda_id order by term.term_id asc";
 						if ( $result = mysqli_query( $conn, $sql ) ) {
 							if ( mysqli_num_rows( $result ) > 0 ) {
 								while ( $row = mysqli_fetch_array( $result ) ) {
-									$primaryterm = $row[ "term_id" ];
+									$primaryterm = $row[ "tid" ];
 									?>
 						<tr>
-							<td><a href="home.php?menu=agenda&sub=addsubterm3&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "><b><?php echo $row['term_no']; ?></b></a>
+							<td><a href="home.php?menu=agenda&sub=viewterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> "><b><?php echo $row['term_no']; ?></b></a>
 							</td>
-							<td><a href="home.php?menu=agenda&sub=termdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> "></a>
+							<td><a href="home.php?menu=agenda&sub=termdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> "></a>
 								<b>
 									<?php echo $row[ 'term_subject' ]; ?>
 								</b>
 								<br>
 								<?php 
-									$sql2 = "SELECT * FROM subterm where term_id = $primaryterm and agenda_id = $agenda_id";
-									
+									$sql2 = "SELECT * FROM subterm where tid = $primaryterm and agenda_id = $agenda_id";
 									$result2 = mysqli_query($conn, $sql2);
 
-									if (mysqli_num_rows($result2) > 0) {
+									if (@mysqli_num_rows($result2) > 0) {
     								while($row2 = mysqli_fetch_assoc($result2)) {
 							
-									echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row2[term_id]&s=$row2[subterm_id]'>" . $row2["subterm_subject"] . "</a><br>";
+									echo "<p><a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row2[tid]&st=$row2[stid]'>" . $row2["subterm_no"] . " " . $row2["subterm_subject"] . "</a>";							
+									echo "&nbsp; <a href='home.php?menu=agenda&sub=deletesubterm&a=$agenda_id&t=$row2[tid]&st=$row2[stid]' title='ลบวาระย่อย' data-toggle='tooltip' class='float-right'><span><i class='fas fa-trash'></i></span></a> ";
+									echo " <a href='home.php?menu=agenda&sub=editsubtermdetail&a=$agenda_id&t=$row2[tid]&st=$row2[stid]' title='แก้ไขวาระย่อย' data-toggle='tooltip' class='float-right'><span><i class='fas fa-pen'></i></span></a>&nbsp;&nbsp;";											
+										echo "</p>"; 
     								}
 									} else {
-									
+									echo "";
 									}
 
 									
 									?>
 							</td>
-							<td><a href="home.php?menu=agenda&sub=termdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
-								<a href="home.php?menu=agenda&sub=addsubterm3&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?> " title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
-								<a href="home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'term_id' ]; ?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
+							<td><a href="home.php?menu=agenda&sub=viewterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> " title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=addsubterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> " title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 
 							</td>
 						</tr>
