@@ -15,6 +15,7 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 	$committee_id = $_POST[ 'committee_id' ];
 	$subcommittee_id = $_POST[ 'subcommittee' ];
 	$meeting_day = $_POST[ 'meeting_day' ];
+	$round = $_POST[ "round" ];
 
 	$st1 = trim( $_POST[ "t11" ] . ":" . $_POST[ "t12" ] . ":00" );
 	$st2 = str_replace( ' ', '', $st1 );
@@ -26,24 +27,24 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 
 
 
-	$sql = "INSERT agenda (agenda_id, agenda_subject,  committee_id, subcommittee_id, meeting_day, start_time, end_time) 
-		VALUES ($agenda_id," . "'$agenda_subject'" . ", $committee_id, $subcommittee_id," . "'$meeting_day'" . ",'$start_time'" . ",'$end_time'" . ")";
-	if ( mysqli_query( $conn, $sql ) ) {
-		//echo "เพิ่มข้อมูลแล้ว";
+	$sql = "INSERT agenda (agenda_id, agenda_subject,  committee_id, subcommittee_id, meeting_day, start_time, end_time,round ) 
+		VALUES ($agenda_id," . "'$agenda_subject'" . ", $committee_id, $subcommittee_id," . "'$meeting_day'" . ",'$start_time'" . ",'$end_time'" . " , '$round')";
 
-		$sql = "SELECT MAX(term_id) AS term_id FROM term";
+	if ( mysqli_query( $conn, $sql ) ) {
+		echo "เพิ่มข้อมูลแล้ว<br>";
+
+		$sql = "SELECT MAX(tid) AS tid FROM term";
 		$result = mysqli_query( $conn, $sql );
 		if ( $result->num_rows > 0 ) {
 			// output data of each row
 			if ( $row = $result->fetch_assoc() ) {
-				$term_id = $row[ "term_id" ] + 1;
+				$tid = $row[ "tid" ] + 1;
 			}
 		} else {
-			$term_id = 1;
+			$tid = 1;
 		}
-		$sql = "INSERT term (term_id, agenda_id, term_no, term_subject) 
-		VALUES ( $term_id , $agenda_id ,'ระเบียบวาระที่ 1', 'เรื่องประธานและคณะอนุกรรมการแจ้งให้ที่ประชุมทราบ')";
-		echo $sql;
+		$sql = "INSERT term (tid, term_id, agenda_id, term_no, term_subject) 
+		VALUES ( $tid , 1 , $agenda_id, 'ระเบียบวาระที่ 1', 'เรื่องประธานและคณะอนุกรรมการแจ้งให้ที่ประชุมทราบ')";
 		$query = mysqli_query( $conn, $sql );
 		if ( $conn->query( $sql ) === TRUE ) {
 			echo "เพิ่มวาระที่ 1 แล้ว" . "<br>";
@@ -53,18 +54,18 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 
 
 
-		$sql = "SELECT MAX(term_id) AS term_id FROM term where agenda_id = $agenda_id";
+		$sql = "SELECT MAX(tid) AS tid FROM term";
 		$result = mysqli_query( $conn, $sql );
 		if ( $result->num_rows > 0 ) {
 			// output data of each row
 			if ( $row = $result->fetch_assoc() ) {
-				$term_id = $row[ "term_id" ] + 1;
+				$tid = $row[ "tid" ] + 1;
 			}
 		} else {
-			$term_id = 1;
+			$tid = 1;
 		}
-		$sql = "INSERT term (term_id, agenda_id, term_no, term_subject) 
-		VALUES ( $term_id , $agenda_id ,'ระเบียบวาระที่ 2', 'เรื่องรับรองรายงานการประชุม')";
+		$sql = "INSERT term (tid, term_id, agenda_id, term_no, term_subject) 
+		VALUES ( $tid , 2 , $agenda_id, 'ระเบียบวาระที่ 2', 'เรื่องรับรองรายงานการประชุม')";
 
 		$query = mysqli_query( $conn, $sql );
 		if ( $conn->query( $sql ) === TRUE ) {
@@ -75,18 +76,18 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 
 
 
-		$sql = "SELECT MAX(term_id) AS term_id FROM term where agenda_id = $agenda_id";
+		$sql = "SELECT MAX(tid) AS tid FROM term";
 		$result = mysqli_query( $conn, $sql );
 		if ( $result->num_rows > 0 ) {
 			// output data of each row
 			if ( $row = $result->fetch_assoc() ) {
-				$term_id = $row[ "term_id" ] + 1;
+				$tid = $row[ "tid" ] + 1;
 			}
 		} else {
-			$term_id = 1;
+			$tid = 1;
 		}
-		$sql = "INSERT term (term_id, agenda_id, term_no, term_subject) 
-		VALUES ( $term_id , $agenda_id ,'ระเบียบวาระที่ 3', 'เรื่องสืบเนื่อง')";
+		$sql = "INSERT term (tid, term_id, agenda_id, term_no, term_subject) 
+		VALUES ( $tid , 3 , $agenda_id, 'ระเบียบวาระที่ 3', 'เรื่องสืบเนื่อง')";
 
 		$query = mysqli_query( $conn, $sql );
 		if ( $conn->query( $sql ) === TRUE ) {
@@ -97,18 +98,18 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 
 
 
-		$sql = "SELECT MAX(term_id) AS term_id FROM term where agenda_id = $agenda_id";
+		$sql = "SELECT MAX(tid) AS tid FROM term";
 		$result = mysqli_query( $conn, $sql );
 		if ( $result->num_rows > 0 ) {
 			// output data of each row
 			if ( $row = $result->fetch_assoc() ) {
-				$term_id = $row[ "term_id" ] + 1;
+				$tid = $row[ "tid" ] + 1;
 			}
 		} else {
-			$term_id = 1;
+			$tid = 1;
 		}
-		$sql = "INSERT term (term_id, agenda_id, term_no, term_subject) 
-		VALUES ( $term_id , $agenda_id ,'ระเบียบวาระที่ 4', 'เรื่องเพื่อพิจารณา')";
+		$sql = "INSERT term (tid, term_id, agenda_id, term_no, term_subject) 
+		VALUES ( $tid , 4 , $agenda_id, 'ระเบียบวาระที่ 4', 'เรื่องเพื่อพิจารณา')";
 
 		$query = mysqli_query( $conn, $sql );
 		if ( $conn->query( $sql ) === TRUE ) {
@@ -119,18 +120,18 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 
 
 
-		$sql = "SELECT MAX(term_id) AS term_id FROM term where agenda_id = $agenda_id";
+		$sql = "SELECT MAX(tid) AS tid FROM term";
 		$result = mysqli_query( $conn, $sql );
 		if ( $result->num_rows > 0 ) {
 			// output data of each row
 			if ( $row = $result->fetch_assoc() ) {
-				$term_id = $row[ "term_id" ] + 1;
+				$tid = $row[ "tid" ] + 1;
 			}
 		} else {
-			$term_id = 1;
+			$tid = 1;
 		}
-		$sql = "INSERT term (term_id, agenda_id, term_no, term_subject) 
-		VALUES ( $term_id , $agenda_id ,'ระเบียบวาระที่ 5', 'เรื่องเพื่อทราบ')";
+		$sql = "INSERT term (tid, term_id, agenda_id, term_no, term_subject) 
+		VALUES ( $tid , 5 , $agenda_id, 'ระเบียบวาระที่ 5', 'เรื่องเพื่อทราบ')";
 
 		$query = mysqli_query( $conn, $sql );
 		if ( $conn->query( $sql ) === TRUE ) {
@@ -141,18 +142,18 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 
 
 
-		$sql = "SELECT MAX(term_id) AS term_id FROM term where agenda_id = $agenda_id";
+		$sql = "SELECT MAX(tid) AS tid FROM term";
 		$result = mysqli_query( $conn, $sql );
 		if ( $result->num_rows > 0 ) {
 			// output data of each row
 			if ( $row = $result->fetch_assoc() ) {
-				$term_id = $row[ "term_id" ] + 1;
+				$tid = $row[ "tid" ] + 1;
 			}
 		} else {
-			$term_id = 1;
+			$tid = 1;
 		}
-		$sql = "INSERT term (term_id, agenda_id, term_no, term_subject) 
-		VALUES ( $term_id , $agenda_id ,'ระเบียบวาระที่ 6', 'เรื่องอื่น ๆ (ถ้ามี)')";
+		$sql = "INSERT term (tid, term_id, agenda_id, term_no, term_subject) 
+		VALUES ( $tid , 6 , $agenda_id, 'ระเบียบวาระที่ 6', 'เรื่องอื่น ๆ (ถ้ามี)')";
 
 		$query = mysqli_query( $conn, $sql );
 		if ( $conn->query( $sql ) === TRUE ) {
@@ -161,13 +162,14 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 			//echo "Error: " . $sql . "<br>" . $conn->error;
 		}
 
-		echo "<script>window.location='home.php?menu=agenda'</script>";
-
+		//echo "<script>window.location='home.php?menu=agenda'</script>";
+		echo "บันทึกการประชุมแล้ว";
 
 	} else {
 		echo "Error: " . $sql . "<br>" . mysqli_error( $conn );
-		header( "location: home.php?menu=agenda" );
+		//header( "location: home.php?menu=agenda" );
 	}
 	mysqli_close( $conn );
+
 }
 ?>
