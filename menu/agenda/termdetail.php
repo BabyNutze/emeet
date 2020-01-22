@@ -1,6 +1,6 @@
 <?php
 
-if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
+if ( isset( $_GET[ "a" ] ) && isset( $_GET[ "t" ] ) ) {
 
 	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject, agenda.round, DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et ,term.tid,  term.term_id, term.term_no, term.term_subject , term.term_detail, term.term_resolution
 	FROM agenda 

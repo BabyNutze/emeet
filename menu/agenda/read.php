@@ -74,50 +74,50 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 				<div class="page-header">
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="home.php">หน้าแรก</a>
+							<li class="breadcrumb-item"><a href="home.php" class="btn btn-outline-danger">หน้าแรก</a>
 							</li>
-							<li class="breadcrumb-item"><a href="home.php?menu=agenda">งานประชุม</a>
-							</li>
+							<li class="breadcrumb-item"><a href="home.php?menu=agenda" class="btn btn-outline-danger">งานประชุม</a></li>			
 							<li class="breadcrumb-item active" aria-current="page">
-								<?php echo $agenda_topic . " ครั้งที่ " . $round; ?>
+								<button type="button" class="btn btn-danger" disabled><?php echo $agenda_topic . " ครั้งที่ " . $round; ?></button>
 							</li>
 						</ol>
 					</nav>
 				</div>
 
-				<h5><span></span> <?php echo $agenda_topic . " ครั้งที่ " . $round; ?></h5>
+				<h5 class="text-center"><?php echo $agenda_topic . " ครั้งที่ " . $round; ?></h5>
 				<div class="float-right">
-					<a href="home.php?menu=agenda&sub=addterm&a=<?php echo $agenda_id; ?>" class="btn btn-primary" role="button" aria-disabled="true">เพิ่มวาระ</a>
+					<a href="home.php?menu=agenda&sub=newterm&a=<?php echo $agenda_id; ?>" class="btn btn-primary" role="button" aria-disabled="true">เพิ่มวาระ</a>					
+					<a href="home.php?menu=agenda&sub=viewagenda&a=<?php echo $agenda_id; ?>" class="btn btn-primary" role="button" aria-disabled="true">รายงานการประชุม</a>
 				</div>
 
-				<h5><span>วันที่</span> <?php echo $thaidate. " เวลา " . $st . "-" . $et ; ?> น.</h5>
+				<h5 class="text-center"><span>วันที่</span> <?php echo $thaidate. " เวลา " . $st . "-" . $et ; ?> น.</h5>
 
 				<br>
 				<table class="table table-dark table-striped">
 					<thead>
 						<tr>
-							<th width="10%">ระเบียบวาระที่</th>
-							<th>เรื่อง</th>
 							<th width="10%"></th>
+							<th></th>
+							<th width=""></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php
-
-						$sql = "SELECT term.tid, term.term_no, term.term_subject FROM term 
+						$sql = "SELECT term.tid, term.term_no, term.term_subject, term.term_detail FROM term 
 						where term.agenda_id = $agenda_id order by term.term_id asc";
 						if ( $result = mysqli_query( $conn, $sql ) ) {
 							if ( mysqli_num_rows( $result ) > 0 ) {
 								while ( $row = mysqli_fetch_array( $result ) ) {
 									$primaryterm = $row[ "tid" ];
+									$term_detail = $row[ "term_detail" ];
 									?>
 						<tr>
-							<td><a href="home.php?menu=agenda&sub=viewterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> "><b><?php echo $row['term_no']; ?></b></a>
+							<td><a href="home.php?menu=agenda&sub=viewterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> " class="btn btn-success"><b><?php echo $row['term_no']; ?></b></a>
 							</td>
 							<td><a href="home.php?menu=agenda&sub=termdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> "></a>
-								<b>
+							<a href="home.php?menu=agenda&sub=viewterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> " class="btn btn-primary">	<b>
 									<?php echo $row[ 'term_subject' ]; ?>
-								</b>
+								</b></a>
 								<br>
 								<?php 
 									$sql2 = "SELECT * FROM subterm where tid = $primaryterm and agenda_id = $agenda_id";
@@ -126,13 +126,24 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 									if (@mysqli_num_rows($result2) > 0) {
     								while($row2 = mysqli_fetch_assoc($result2)) {
 							
-									echo "<p><a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row2[tid]&st=$row2[stid]'>" . $row2["subterm_no"] . " " . $row2["subterm_subject"] . "</a>";							
+									echo "<p><a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$row2[tid]&st=$row2[stid]' class='btn btn-info btn-sm'>" . $row2["subterm_no"] . " " . $row2["subterm_subject"] . "</a>";							
 									echo "&nbsp; <a href='home.php?menu=agenda&sub=deletesubterm&a=$agenda_id&t=$row2[tid]&st=$row2[stid]' title='ลบวาระย่อย' data-toggle='tooltip' class='float-right'><span><i class='fas fa-trash'></i></span></a> ";
 									echo " <a href='home.php?menu=agenda&sub=editsubtermdetail&a=$agenda_id&t=$row2[tid]&st=$row2[stid]' title='แก้ไขวาระย่อย' data-toggle='tooltip' class='float-right'><span><i class='fas fa-pen'></i></span></a>&nbsp;&nbsp;";											
-										echo "</p>"; 
+										echo "</p>"; 									
+
     								}
 									} else {
-									echo "";
+										
+									if($term_detail != ""){														
+										//echo $term_detail;
+										
+										$new_content = strip_tags($term_detail);
+										$content = iconv_substr($new_content,0,100,'UTF-8');
+										echo $content . "...";
+										}else{
+								
+										}
+
 									}
 
 									
@@ -140,7 +151,8 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 							</td>
 							<td><a href="home.php?menu=agenda&sub=viewterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> " title='รายละเอียด' data-toggle='tooltip'><span><i class='fas fa-eye fa-2x'></i></span></a>
 								<a href="home.php?menu=agenda&sub=addsubterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?> " title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus fa-2x'></i></span></a>
-								<a href="home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
+								<a href="home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?>" title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>								
+								<a href="home.php?menu=agenda&sub=deleteterm&a=<?php echo $agenda_id; ?>&t=<?php echo $row[ 'tid' ]; ?>" title='ลบวาระ' data-toggle='tooltip'><span><i class='fas fa-trash fa-2x'></i></span></a>
 
 							</td>
 						</tr>

@@ -97,10 +97,12 @@ if ( isset( $_POST[ 'btnres' ] ) ) {
 				</h3>
 				<h5>
 						<b><?php echo $term_no ." " . $term_subject ;  ?></b>
+
+					
 				</h5>
 			
 
-				<div class="float-right"><a href='home.php?menu=agenda&sub=editsubtermdetail&a=<?php echo $agenda_id;?>&t=<?php echo $tid;?>&s=<?php echo $stid ;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
+				<div class="float-right"><a href='home.php?menu=agenda&sub=editsubtermdetail&a=<?php echo $agenda_id;?>&t=<?php echo $tid;?>&st=<?php echo $stid ;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 				</div>
 				<br>
 				<?php echo $subterm_no; ?>
@@ -118,7 +120,7 @@ if ( isset( $_POST[ 'btnres' ] ) ) {
 				</div>
 				<form action="" id="addtermform" name="addtermform" method="post" >
 					<h5><b><u>มติที่ประชุม</u></b></h5>
-					<div class="float-right"><a href='home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id;?>&t=<?php echo $tid;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
+					<div class="float-right"><a href='home.php?menu=agenda&sub=edittermdetail&a=<?php echo $agenda_id;?>&t=<?php echo $tid;?>&st=<?php echo $stid;?>' title='แก้ไข' data-toggle='tooltip'><span><i class='fas fa-edit fa-2x'></i></span></a>
 					</div>
 					<?php
 

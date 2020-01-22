@@ -1,6 +1,5 @@
 <?php
 
-
 if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) && isset( $_GET[ "t" ] ) ) {
 
 	$sql = "SELECT agenda.agenda_id, agenda.agenda_subject,  DATE_FORMAT(meeting_day,'%d/%m/%Y') as md,TIME_FORMAT(start_time, '%H:%i') as st,	TIME_FORMAT(end_time, '%H:%i') as et , agenda.round, term.tid, term.term_no, term_subject , term.term_detail, term.term_resolution
@@ -31,7 +30,6 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) && isset( $_GET[ "t
 			header( "location: error.php" );
 			exit();
 		}
-
 	} else {
 		echo "Oops! Something went wrong. Please try again later.";
 	}
@@ -45,16 +43,13 @@ if ( isset( $_POST[ "submit" ] ) ) {
 	$term_resolution = $_POST[ 'term_resolution' ];
 
 	$sql = "UPDATE term SET term_detail ='$term_detail' , term_resolution = '$term_resolution' WHERE tid = $tid and agenda_id = $agenda_id ";
-
-	$sql = "UPDATE term SET term_detail ='$term_detail' , term_resolution = '$term_resolution' WHERE tid = $tid and agenda_id = $agenda_id ";
 	if ( mysqli_query( $conn, $sql ) ) {
 		$rowcount = $_POST[ "rowcount" ];
 		// อัพโหลดไฟล์ และบันทึกลง database
-		for ( $i = 0 ,$no = $rowcount; $i < count( $_FILES[ "inputfile" ][ "name" ] ); $i++ ) {
+		for ( $i = 0, $no = $rowcount; $i < count( $_FILES[ "inputfile" ][ "name" ] ); $i++ ) {
 			if ( $_FILES[ "inputfile" ][ "name" ][ $i ] != "" ) {
 				if ( move_uploaded_file( $_FILES[ "inputfile" ][ "tmp_name" ][ $i ], "attachfiles/" . $_FILES[ "inputfile" ][ "name" ][ $i ] ) ) {
 					//echo "อัพโหลดไฟล์แล้ว<br>";
-
 					$sql = "SELECT MAX(atfid) AS atfid FROM attachfiles";
 					$result = mysqli_query( $conn, $sql );
 					if ( $result->num_rows > 0 ) {
@@ -67,27 +62,26 @@ if ( isset( $_POST[ "submit" ] ) ) {
 					}
 
 					$attach_no = $no;
-					
+
 					$attach_name = $_FILES[ "inputfile" ][ "name" ][ $i ];
 					$attach_detail = $_POST[ "attach_detail" ][ $attach_no ];
 					$attno = $_POST[ "attach_no" ][ $attach_no ];
 
 					$sql = "INSERT INTO attachfiles";
 					$sql .= " (atfid, agenda_id, tid, attach_no, attach_name, attach_detail, updt) VALUES ($atfid, $agenda_id, $tid, $attno, '$attach_name', '$attach_detail', NOW())  ";
-					
-					
+
 					$query = mysqli_query( $conn, $sql );
 					if ( $conn->query( $sql ) === TRUE ) {
-						
+
 						echo "บันทึกข้อมูลแล้ว";
-						echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&a=$agenda_id&t=$tid';}, 1000);</script>";
+						//echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&a=$agenda_id&t=$tid';}, 1000);</script>";
 					} else {
 						//echo "Error: " . $sql . "<br>" . $conn->error;
 						//echo "ตรวจสอบอีกครั้ง";
 						//	echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=viewterm&a=$agenda_id&t=$tid';}, 1000);</script>";
 					}
-					
-				$no =  $no + 1;
+
+					$no = $no + 1;
 				}
 			}
 		}
@@ -122,7 +116,7 @@ if ( isset( $_POST[ "submit" ] ) ) {
 								</a>
 							</li>
 							<li class="breadcrumb-item">
-								<a href="home.php?menu=agenda&sub=teamdetail&a=<?php echo $agenda_id;?>">
+								<a href="home.php?menu=agenda&sub=termdetail&a=<?php echo $agenda_id;?>&t=<?php echo $tid;?>">
 									<?php echo $term_no . " " . $term_subject ; ?>
 								</a>
 							</li>
@@ -133,7 +127,8 @@ if ( isset( $_POST[ "submit" ] ) ) {
 					</nav>
 				</div>
 				<?php 
-				$term_id = $_GET["t"];
+				$tid = $_GET["t"];
+				$agenda_id = $_GET["a"]
 				?>
 
 				<br>
@@ -144,6 +139,7 @@ if ( isset( $_POST[ "submit" ] ) ) {
 					<h5>
 						<?php echo $term_no ." " .$term_subject ;  ?>
 					</h5>
+
 					<br>
 					<input type="hidden" name="agenda_id" value="<?php echo $agenda_id;?>">
 					<input type="hidden" name="tid" value="<?php echo $tid;?>">
@@ -160,22 +156,30 @@ if ( isset( $_POST[ "submit" ] ) ) {
 						<div class="col">เอกสารประกอบ</div>
 						<div class="col">รายละเอียด</div>
 					</div>
+
 					<br>
 					<?php 
 					$sql = "SELECT * FROM attachfiles where agenda_id = $_GET[a] and tid= $_GET[t]";
 					$result = mysqli_query($conn, $sql);
 					if (mysqli_num_rows($result) > 0) {
 					$rowcount = mysqli_num_rows($result);
+
     				while($row = mysqli_fetch_assoc($result)) {
-        				echo '<div class="row"><div class="col"> <label>' . $row["attach_no"] . '. </label> ' . $row["attach_name"] . '
-								</div><div class="col">
-								<input type="text" name="attach_detail[]" value="'.$row["attach_detail"] .'">
+        				echo '<div class="row">
+									<div class="col"> <label>' . $row["attach_no"] . '. </label> <a href="attachfiles/' . $row["attach_name"] .  ' " target="_blank" >' . $row["attach_name"] . '</a>
+									</div>
+									<div class="col">
+								<input type="text" name="attach_detail[]"  value="'.$row["attach_detail"] .'" >
 								<input type="hidden" name="attach_no[]" value="'. $row["attach_no"] .'">
 								<input type="hidden" name="attach_name[]" value="'. $row["attach_name"] .'">
-								</div></div>';
+								<a href="home.php?menu=agenda&sub=deleteattachfile&a=' . $agenda_id . '&t= ' . $tid . '&atf=' . $row["atfid"] . '&atfno=' .$row["attach_no"] .  '" title="ลบวาระย่อย" data-toggle="tooltip" class="float-right"><span><i class="fas fa-trash"></i></span></a>
+									</div>
+								</div>';
 					}
-						} else {
-    					echo "0 results";
+						}
+					else {
+						$rowcount = 0;
+    					echo "ไม่มีไฟล์แนบ";
 					}
 					$addinputfile = 10-$rowcount ;
 					
@@ -193,11 +197,8 @@ if ( isset( $_POST[ "submit" ] ) ) {
 					<input type="hidden" name="agenda_id" value="<?php echo $agenda_id; ?>">
 					<input type="hidden" name="tid" value="<?php echo $tid; ?>">
 					<input type="hidden" name="rowcount" value="<?php echo $rowcount; ?>">
-
-
-
-
 					<br>
+
 					<h5><b><u>มติที่ประชุม</u></b></h5>
 
 					<input type="text" name="term_resolution" class="form-control" value="<?php echo $term_resolution; ?>">

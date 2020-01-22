@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-expand-lg navbar-light">
+<nav class="navbar navbar-dark navbar-expand-lg bg-dark">
 	<div class="navbar-header d-flex col">
 		<a class="navbar-brand" href="#">ระบบ<b>บริหารงานประชุม</b></a>
 		<button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle navbar-toggler ml-auto">

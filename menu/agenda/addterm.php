@@ -1,7 +1,5 @@
 <?php
 
-
-
 if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 
 	// Prepare a select statement
@@ -20,8 +18,6 @@ if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
 			$md = $row[ "md" ];
 			$st = $row[ "st" ];
 			$et = $row[ "et" ];
-
-
 
 		} else {
 			// URL doesn't contain valid id parameter. Redirect to error page
@@ -91,7 +87,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'hdnCount' ] ) ) {
 							</li>
 						</ol>
 					</nav>
-					<div class="float-right"><a href="?menu=agenda&sub=addagenda">เพิ่มวาระการประชุม</a>
+					<div class="float-right"><a href="?menu=agenda&sub=newterm&a=<?php echo $agenda_id; ?>">เพิ่มวาระการประชุม</a>
 					</div>
 
 				</div>
@@ -100,41 +96,25 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'hdnCount' ] ) ) {
 				<br><br>
 				<form action="" id="addtermform" name="addtermform" method="post">
 					<h3>
-						<?php echo $agenda_topic. "<br>เวลา " . $st. "-" . $et . " น." ;  ?>
+						<?php echo $agenda_subject . " ครั้งที่ " . $round ;  ?>
+						<?php echo "<br>วันที่ " . $md . " เวลา " . $st. "-" . $et . " น." ;  ?>
 					</h3>
 					<br>
-					<table class="table table-hover" id="mytable">
-						<thead class="thead-light">
-							<tr>
-								<th style="width: 13.33%">วาระที่</th>
-								<th style="width: 50%">เรื่อง</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody>
 							<?php 
 								$sql = "SELECT * FROM term where agenda_id = $agenda_id ";
 								if($result = mysqli_query($conn, $sql)){
 									if(mysqli_num_rows($result) > 0){
 									while ( $row = mysqli_fetch_array( $result ) ) {
 							?>
-							<tr>
-								<td>									
+						
 									<?php echo $row[ 'term_no' ]; ?>
-								</td>
-								<td>
-									<?php echo $row[ 'term_subject' ]; ?>
-								</td>
-								<td>
-									<a href="home.php?menu=agenda&sub=addsubterm&ag=<?php echo $agenda_id;?>&t=<?php echo $row[ 'term_no' ];  ?>" title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus-circle fa-2x'></i></span></a>
 
-								</td>
-							</tr>
+									<?php echo $row[ 'term_subject' ]; ?>
+
+									<a href="home.php?menu=agenda&sub=addsubterm&ag=<?php echo $agenda_id;?>&t=<?php echo $row[ 'term_no' ];  ?>" title='เพิ่มวาระย่อย' data-toggle='tooltip'><span><i class='fas fa-plus-circle fa-2x'></i></span></a><br>
 							<?php
 							}
 							?>
-					</table>
-
 					<?php
 					mysqli_free_result( $result );
 					}

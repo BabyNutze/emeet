@@ -1,6 +1,31 @@
+<script type="text/javascript">
+	$( document ).ready( function () {
+		$( '#committee' ).on( 'change', function () {
+			var committee_id = $( this ).val();
+			console.log( committee_id );
+			if ( committee_id ) {
+				$.ajax( {
+					type: 'POST',
+					url: 'menu/agenda/ajaxaddagenda.php',
+					data: 'committee_id=' + committee_id,
+					success: function ( html ) {
+						$( '#subcommittee' ).html( html );
+
+
+					}
+				} );
+			} else {
+				$( '#subcommittee' ).html( '<option value="">Select country first</option>' );
+			}
+		} );
+
+
+	} );
+</script>
 <?php
 date_default_timezone_set( "Asia/Bangkok" );
 if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
+
 	$sql = "SELECT MAX(agenda_id) AS agenda_id FROM agenda";
 	$result = mysqli_query( $conn, $sql );
 	if ( $result->num_rows > 0 ) {
@@ -12,7 +37,7 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 		$agenda_id = 1;
 	}
 	$agenda_subject = $_POST[ 'subject' ];
-	$committee_id = $_POST[ 'committee_id' ];
+	$committee_id = $_POST[ 'committee' ];
 	$subcommittee_id = $_POST[ 'subcommittee' ];
 	$meeting_day = $_POST[ 'meeting_day' ];
 	$round = $_POST[ "round" ];
@@ -163,7 +188,7 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 		}
 		echo "บันทึกการประชุมแล้ว";
 		echo "<script>window.location='home.php?menu=agenda'</script>";
-				echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda';}, 1000);</script>";
+		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda';}, 1000);</script>";
 
 	} else {
 		echo "Error: " . $sql . "<br>" . mysqli_error( $conn );
@@ -190,17 +215,21 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 				</div>
 				<h2></h2>
 				<form action="" method="post">
-					<div class="form-row">
-						<div class="form-group col-md-9">
-							<label for="inputEmail4">หัวข้อการประชุม</label>
-							<input type="text" class="form-control" name="subject" value="คณะอนุกรรมการระบบเทคโนโลยีสารสนเทศ">
+
+
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<label class='input-group-text' for='subject'>หัวข้อการประชุม</label>
 						</div>
+						<input type="text" name="subject" class="form-control">
 					</div>
-					<div class="form-row">
-						<div class="form-group col-md">
-							<label for="round">ครั้งที่</label>
-							<input type="text" name="round" value="33-9/2561">
-							<!--
+
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<label class='input-group-text' for='round'>ครั้งที่</label>
+						</div>
+						<input type="text" name="round" value="33-9/2561">
+						<!--
 							<select name="year" id="year">
 								<?php //  $latest_year = date('Y');  
 								//for($i=0; $i<=10; $i++) {?>
@@ -210,70 +239,24 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 								<?php// } ?>
 							</select>
 							-->
-						</div>
-					</div>
-
-
-					<div class="form-row">
-						<div class="form-group col-md-4">
-							<label for="committee_id">กรรมการ / จรรยาบรรณ</label>
-							<select id="committee_id" name="committee_id" class="form-control">
-								<option value="">ชุดกรรมการ</option>
-								<?php
-								$default_committee = '1';
-								$default_val = '1';
-								$sql = "SELECT * FROM committee";
-								if ( $result = mysqli_query( $conn, $sql ) ) {
-									if ( mysqli_num_rows( $result ) > 0 ) {
-										while ( $row = mysqli_fetch_array( $result ) ) {
-											?>
-								<option value="<?php echo $row[ 'committee_id' ]; ?>" <?php if($row[ 'committee_id' ]==1 ) echo "SELECTED";?>>
-									<?php echo $row[ 'committee_name' ]; ?>
-								</option>
-								<?php
-								}
-								}
-								}
-								?>
-							</select>
-						</div>
 
 					</div>
 
-
-					<div class="form-row">
-						<div class="form-group col-md-8">
-							<label for="subcommittee_id">อนุกรรมการ / คณะทำงาน</label>
-							<select id="subcommittee" name="subcommittee" class="form-control">
-								<option value="">อนุกรรมการ / คณะทำงาน</option>
-								<?php
-
-								$sql = "SELECT * FROM subcommittee";
-								if ( $result = mysqli_query( $conn, $sql ) ) {
-									if ( mysqli_num_rows( $result ) > 0 ) {
-										while ( $row = mysqli_fetch_array( $result ) ) {
-											?>
-								<option value="<?php echo $row[ 'subcommittee_id' ]; ?>" <?php if($row[ 'subcommittee_id' ]== 34 ) echo "SELECTED";?>>
-									<?php echo $row[ 'subcommittee_name' ]; ?>
-								</option>
-								<?php
-								}
-								}
-								}
-								?>
-							</select>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<label class='input-group-text' for='meeting_day'>วันที่</label>
 						</div>
-					</div>
-
-					<div>
-						<label for="meeting_day">วันที่</label>
 						<input type="date" name="meeting_day" id="meeting_day">
-						<label for="t1">เวลา</label>
+
+						<div class="input-group-prepend">
+							<label class='input-group-text' for='t11'> เวลา</label>
+						</div>
+
 						<select name="t11">
 							<?php
 							foreach ( range( '0', '23' ) as $num ) {
 								?>
-							<option value="<?php echo sprintf(" %02d ",$num); ?>" <?php if(sprintf(" %02d ",$num) == 13 ) echo "SELECTED";?>>
+							<option value="<?php echo sprintf(" %02d ",$num); ?>" <?php if(sprintf( " %02d ",$num) == 13 ) echo "SELECTED";?>>
 								<?php echo sprintf("%02d",$num)?>
 							</option>
 							<?php } ?>
@@ -288,12 +271,14 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 							<?php } ?>
 						</select>
 
-						<label for="t21"> ถึง </label>
+						<div class="input-group-prepend">
+							<label class='input-group-text' for='t21'>ถึง</label>
+						</div>
 						<select name="t21">
 							<?php
 							foreach ( range( '0', '23' ) as $num ) {
 								?>
-							<option value="<?php echo sprintf(" %02d ",$num); ?>" <?php if(sprintf(" %02d ",$num) == 16 ) echo "SELECTED";?>>
+							<option value="<?php echo sprintf(" %02d ",$num); ?>" <?php if(sprintf( " %02d ",$num) == 16 ) echo "SELECTED";?>>
 								<?php echo sprintf("%02d",$num)?>
 							</option>
 							<?php } ?>
@@ -307,19 +292,51 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "POST" ) {
 							</option>
 							<?php } ?>
 						</select>
+
+
+					</div>
+
+					<div class='input-group mb-3'>
+						<div class='input-group-prepend'>
+							<label class='input-group-text' for='committee'>กรรมการ</label>
+						</div>
+						<select class='custom-select' id='committee' name='committee'>
+							<option>เลือก</option>
+							<?php
+							$sql = "SELECT * FROM committee";
+							$result = $conn->query( $sql );
+							while ( $row = $result->fetch_assoc() ) {
+								echo "<option value='" . $row[ 'committee_id' ] . "'>" . $row[ 'committee_name' ] . "</option>";
+							}
+							?>
+						</select>
+					</div>
+					<div id="me"></div>
+					<div class='input-group mb-3'>
+						<div class='input-group-prepend'>
+							<label class='input-group-text' for='committee'>อนุกรรมการ</label>
+						</div>
+						<select class='custom-select'  id="subcommittee" name="subcommittee">
+							<option value="">เลือก</option>
+						</select>
 					</div>
 
 
 
-					<br>
-					<button type="submit" class="btn btn-primary">บันทึก</button>
+
+
+
+
+
+						<br><br>
+						<button type="submit" class="btn btn-primary">บันทึก</button>
 				</form>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<script>
-	var today = moment().format( 'YYYY-MM-DD' );
-	console.log( today );
-	$( "#meeting_day" ).val( today );
-</script>
+	<script>
+		var today = moment().format( 'YYYY-MM-DD' );
+		console.log( today );
+		$( "#meeting_day" ).val( today );
+	</script>

@@ -64,18 +64,16 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'subterm_subject' ] ) && 
 	$agenda_id = $_POST[ 'agenda_id' ];
 	$subterm_no = $_POST['subterm_no'];
 
-
-
 	$sql = "INSERT INTO subterm (stid, subterm_id,  agenda_id, tid, subterm_subject, subterm_detail, subterm_no) 
 					VALUES ($stid, $subterm_id, $agenda_id, $tid, '$subterm_subject', '$subterm_detail', '$subterm_no' )";
 	$query = mysqli_query( $conn, $sql );
 	if ( $conn->query( $sql ) === TRUE ) {
-		echo "บันทึกข้อมูลแล้ว";
-		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=termdetail&a=$agenda_id&t=$tid';}, 1000);</script>";
+		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=editsubtermdetail&a=$agenda_id&t=$tid&st=$stid';}, 1000);</script>";
 	} else {
 		//echo "Error: " . $sql . "<br>" . $conn->error;
 		//echo "ตรวจสอบอีกครั้ง";
-		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=viewterm&a=$agenda_id&t=$tid';}, 1000);</script>";
+		//echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=viewterm&a=$agenda_id&t=$tid';}, 1000);</script>";
+				echo "<a href = 'home.php?menu=agenda&sub=viewterm&a=$agenda_id&t=$tid' ></a>";
 	}
 
 } else {
@@ -97,7 +95,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'subterm_subject' ] ) && 
 							</li>
 							<li class="breadcrumb-item">
 								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
-									<?php echo $agenda_subject; ?>
+									<?php echo $agenda_subject . " ครั้งที่ " . $round; ?>
 								</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">
@@ -124,7 +122,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( $_POST[ 'subterm_subject' ] ) && 
 					$row_cnt = mysqli_num_rows($result);		
 					echo "มีวาระย่อย $row_cnt วาระ<br>";	
 					while( $row = $result->fetch_assoc() ) {
-							echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$term_id&s=$row[stid]'>". $row['subterm_no'] . " " . $row['subterm_subject'] . "</a><br>";
+							echo "<a href='home.php?menu=agenda&sub=subtermdetail&a=$agenda_id&t=$term_id&st=$row[stid]'>". $row['subterm_no'] . " " . $row['subterm_subject'] . "</a><br>";
 						}
 				} else {
 					echo "ยังไม่มีวาระย่อย";

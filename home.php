@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php session_start(); 
 include("inc/db.php");
-
+require("inc/fpdf/fpdf.php");
 	if(isset($_SESSION['id'])){
 		
 		$strSQL = "SELECT * FROM user WHERE id = '".$_SESSION['id']."' ";
@@ -20,7 +20,6 @@ include("inc/db.php");
 
 ?>
 <html lang="en">
-
 <head>
 	<title>me</title>
 	<meta charset="utf-8">
@@ -30,14 +29,13 @@ include("inc/db.php");
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 	<script src="inc/moment.js"></script>
-	<link href="https://fonts.googleapis.com/css?family=Krub|Mali" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 	<link href="inc/style.css" rel="stylesheet">
 	<script src="inc/ckeditor/ckeditor.js"></script>
+	<link rel="stylesheet" href="inc/fonts/thsarabunnew.css"/>
 	<style>
 		body {
-			font-family: 'Mali', cursive;
-			font-family: 'Krub', sans-serif;
+			font-family: 'THSarabunNew', sans-serif;
 		}
 	</style>
 	<script>

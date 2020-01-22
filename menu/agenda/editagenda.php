@@ -1,3 +1,46 @@
+<script type="text/javascript">
+	$( document ).ready( function () {
+		var committee_id = $( '#committee' ).val();
+		var subcommittee_id = $( '#subcm' ).val();
+	console.log(committee_id);console.log(subcommittee_id);
+		if ( subcommittee_id ) {
+			$.ajax( {
+				type: 'POST',
+				url: 'menu/agenda/ajaxaddagenda.php',
+				data : { 'committee_id': committee_id, 'subcommittee_id': subcommittee_id}
+				,
+				success: function ( html ) {
+					$( '#subcommittee' ).html( html );
+
+
+				}
+			} );
+		} else {
+			$( '#subcommittee' ).html( '<option value="">เลือก</option>' );
+		}
+		
+		$( '#committee' ).on( 'change', function () {
+			var committee_id = $( this ).val();
+			console.log( committee_id );
+			if ( committee_id ) {
+				$.ajax( {
+					type: 'POST',
+					url: 'menu/agenda/ajaxaddagenda.php',
+					data: 'committee_id=' + committee_id,
+					success: function ( html ) {
+						$( '#subcommittee' ).html( html );
+
+
+					}
+				} );
+			} else {
+				$( '#subcommittee' ).html( '<option value="">Select country first</option>' );
+			}
+		} );
+
+
+	} );
+</script>
 <?php
 
 if ( isset( $_GET[ "a" ] ) && !empty( trim( $_GET[ "a" ] ) ) ) {
@@ -47,12 +90,12 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 
 	$fsubject = $_POST[ "subject" ];
 	$fagenda_id = $_POST[ "agenda_id" ];
-	$fround = $_POST[ "round" ];	
-	$fcommittee_id = $_POST[ "committee_id" ];	
-	$fsubcommittee_id = $_POST[ "subcommittee_id" ];	
+	$fround = $_POST[ "round" ];
+	$fcommittee_id = $_POST[ "committee" ];
+	$fsubcommittee_id = $_POST[ "subcommittee" ];
 	$fmeeting_day = $_POST[ "meeting_day" ];
 
-	
+
 	$fst1 = trim( $_POST[ "t11" ] . ":" . $_POST[ "t12" ] . ":00" );
 	$fst2 = str_replace( ' ', '', $fst1 );
 	$fet1 = $_POST[ "t21" ] . ":" . $_POST[ "t22" ] . ":00";
@@ -61,14 +104,13 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 	$fstart_time = $fmeeting_day . " " . $fst2;
 	$fend_time = $fmeeting_day . " " . $fet2;
 
-	
+
 	// Prepare a select statement
-	$sql = "UPDATE agenda SET agenda_subject= '$fsubject', round = '$fround', committee_id = $fcommittee_id, subcommittee_id = $fsubcommittee_id, meeting_day = '$fmeeting_day', start_time = '$fstart_time', end_time = '$fend_time'
-	WHERE agenda_id =  $fagenda_id";
+	$sql = "UPDATE agenda SET agenda_subject= '$fsubject', round = '$fround', committee_id = $fcommittee_id, subcommittee_id = $fsubcommittee_id, meeting_day = '$fmeeting_day', start_time = '$fstart_time', end_time = '$fend_time' WHERE agenda_id =  $fagenda_id";
 	if ( mysqli_query( $conn, $sql ) ) {
-		
-		echo "<script>setTimeout(function() {  window.location.href = 'home.php?menu=agenda&sub=editagenda&a=$agenda_id';} );</script>";
-		
+
+		echo "<script>window.location.href = 'home.php?menu=agenda&sub=editagenda&a=$agenda_id';</script>";
+
 	} else {
 		echo "Error updating record: " . mysqli_error( $conn );
 	}
@@ -91,7 +133,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 								<a href="home.php?menu=agenda&sub=read&a=<?php echo $agenda_id;?>">
 									<?php echo $agenda_subject . " ครั้งที่ " . $round; ?>
 								</a>
-							</li>							
+							</li>
 							<li class="breadcrumb-item active" aria-current="page">
 								แก้ไขการประชุม
 							</li>
@@ -103,73 +145,62 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 				</div>
 				<h2></h2>
 				<form action="" method="post">
-					<div class="form-row">
-						<div class="form-group col-md-9">
-							<label for="subject">หัวข้อการประชุม</label>
-							<input type="text" class="form-control" name="subject" value="<?php echo $agenda_subject;?>">
-							<input type="hidden" name="agenda_id" value="<?php echo $agenda_id;?>">
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group col-md">
-							<label for="round">ครั้งที่</label>
-							<input type="text" name="round" value="<?php echo $round; ?>">
 
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<label class='input-group-text' for='subject'>หัวข้อการประชุม</label>
 						</div>
+						<input type="hidden" name="agenda_id" value="<?php echo $agenda_id;?>">
+						<input type="text" name="subject" class="form-control" value="<?php echo $agenda_subject;?>">
 					</div>
 
 
-					<div class="form-row">
-						<div class="form-group col-md-4">
-							<label for="committee_id">กรรมการ / จรรยาบรรณ</label>
-							<select id="committee_id" name="committee_id" class="form-control">
-								<?php
-								$default_committee = '1 ';
-								$default_val = '1 ';
-								$sql = "SELECT * FROM committee";
-								if ( $result = mysqli_query( $conn, $sql ) ) {
-									if ( mysqli_num_rows( $result ) > 0 ) {
-										while ( $row = mysqli_fetch_array( $result ) ) {
-											$cid = $row["committee_id"];
-											$cname = $row["committee_name"];
-											?>
-								<option value="<?php echo $cid; ?>" <?php if( $cid == $committee_id ) echo "selected";?>><?php echo $cname; ?>
-								</option>
-								<?php
-								}
-								}
-								}
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<label class='input-group-text' for='round'>ครั้งที่</label>
+						</div>
+						<input type="text" name="round" value="<?php echo $round; ?>">
+
+					</div>
+
+
+
+					<div class='input-group mb-3'>
+						<div class='input-group-prepend'>
+							<label class='input-group-text' for='committee'>กรรมการ</label>
+						</div>
+						<select class='custom-select' id='committee' name='committee'>
+							<option>เลือก</option>
+							<?php
+							$sql = "SELECT * FROM committee";
+							$result = $conn->query( $sql );
+							while ( $row = $result->fetch_assoc() ) {
+								$cid = $row["committee_id"];
+								$cname = $row["committee_name"];
 								?>
-							</select>
-						</div>
+							<option value="<?php echo $cid; ?>" <?php if( $cid==1 ) echo "selected";?>>
+								<?php echo $cname; ?>
+							</option>
 
+							<?php
+							}
+							?>
+						</select>
+					</div>
+					<div id="me"></div>
+					<div class='input-group mb-3'>
+						<div class='input-group-prepend'>
+							<label class='input-group-text' for='committee'>อนุกรรมการ</label>
+						</div>
+						<select class='custom-select' id="subcommittee" name="subcommittee">
+							<option value="">เลือก</option>
+						</select>
 					</div>
 
 
-					<div class="form-row">
-						<div class="form-group col-md-8">
-							<label for="subcommittee_id">อนุกรรมการ / คณะทำงาน</label>
-							<select id="subcommittee_id" name="subcommittee_id" class="form-control">
-								<?php
 
-								$sql = "SELECT * FROM subcommittee";
-								if ( $result = mysqli_query( $conn, $sql ) ) {
-									if ( mysqli_num_rows( $result ) > 0 ) {
-										while ( $row = mysqli_fetch_array( $result ) ) {
-											$scid = $row["subcommittee_id"];
-											$scname = $row["subcommittee_name"];
-											?>
-								<option value="<?php echo $scid; ?>" <?php if($scid==$subcommittee_id ) echo "selected";?>>
-									<?php echo $scname; ?>
-								</option>
-								<?php
-								}
-								}
-								}
-								?>
-							</select>
-						</div>
-					</div>
+
+
 
 
 					<div>
@@ -188,6 +219,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 							</option>
 							<?php } ?>
 						</select>
+					
 						<select name="t12">
 							<option value="<?php echo $expst[1];?>"><?php echo $expst[1];?></option>
 							<?php
@@ -198,6 +230,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 							</option>
 							<?php } ?>
 						</select>
+					
 
 						<label for="t21"> ถึง </label>
 						<select name="t21">
@@ -210,6 +243,7 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 							</option>
 							<?php } ?>
 						</select>
+					
 						<select name="t22">
 							<option value="<?php echo $expet[1];?>"><?php echo $expet[1];?></option>
 							<?php
@@ -220,10 +254,11 @@ if ( isset( $_POST[ "agenda_id" ] ) && !empty( trim( $_POST[ "agenda_id" ] ) ) &
 							</option>
 							<?php } ?>
 						</select>
+					
 					</div>
 
 
-
+					<input type="hidden" id="subcm" value="34">
 
 
 
